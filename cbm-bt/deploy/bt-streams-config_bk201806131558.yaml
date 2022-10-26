@@ -1,0 +1,34 @@
+applicationId: cbm-bt-app-1 
+clientId: cbm-bt-client-1
+groupId: cbm-bt-group
+brokerList: localhost:9092
+autoOffsetReset: latest
+processingGuarantee: exactly_once
+commitInterval: 2000
+numOfThreads: 1
+streams-source-config:
+  name: IngestSource
+  topic: ingest-topic-1
+rules-processor-config:
+  name: RulesProcessor
+#message-order-processor-config:
+#  name: MessageOrderProcessor
+#  store: cbm-message-list
+#  batchDuration: 20000
+#  successProcessor: RMSSink1
+#  alertSink: AlertSink
+message-route-processor-config:
+ name: MessageRouteProcessor
+ routes-config:
+  - messageTypes: 
+    - NotifyOptimizationRequest
+    - SynchronizePriceGrids
+    - SynchronizeProductClasses
+    sinkName: PMSSinkP1
+streams-sink-config:
+  - name: PMSSinkP1
+    topic: rms-topic-1
+#  - name: BusinessSink2
+#    topic: rms-topic-2
+#  - name: AlertSink
+#    topic: alert-topic-1

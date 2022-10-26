@@ -1,0 +1,76 @@
+###########################################################################
+# Template parameter file.
+#
+# Define the type, format, and generation rules for 
+# the template params.
+#
+# Format is - "ParamName::ParamType::DefaultValue::SampleType::SampleSource"
+#
+# Possible values for ParamType  : STRING, DATE, INT, EDASEQNUM
+#
+# Possible values for SampleType : 
+#   file    - the generator selects a random value
+#             from the values listed in a file
+#   list    - the generator selects a random value
+#             from the list of values in the SampleSource
+#   current - used for ParamType DATE. The generator
+#             generates the current time
+#   range   - used for ParamType INT. The generator
+#             selects a random value from the given range
+#   sequence- used for ParamType INT. The generator 
+#             uses the SampleSource param as a beginning
+#             sequence number
+#   <typ>blob- used for ParamType STRING. The generator generates
+#             an <typ> string blob of a random size. Valid values 
+#             for <typ> are alpha, or numeric, or ascii, or 
+#             alphanumeric
+#   custom  - A custom implementation for a ParamType. Example - EDASEQNUM
+#
+# Possible values for SampleSource :
+#   - if SampleType is file, the value has to be the path of the file
+#   - if SampleType is list, the value has to be a comma separated
+#     list of values. Ex. 12,45,24,59,80
+#   - if SampleType is current, the value has to be a date format
+#     Ex. "YYYY-MM-dd HH:mm:ss"
+#   - if SampleType is range, the value has to be in the format 
+#     "MinIntValue-MaxIntValue"
+#   - if SampleType is sequence, the value is the beginning sequence
+#     and has to be an number. Ex. 200
+#   - if SampleType is asciiblob, the value is an ASCII string of
+#     a random size that is between the given range
+#   
+# Configs for a "custom" SampleType for a "EDASEQNUM" ParamType
+#   This is used to generate message sequence numbers out of order
+#   - Append the following rules to the EDASEQNUM ParamType config line
+#   - orderDelayRangeLow-orderDelayRangeHigh-orderDelayCount::orderSkipRangeLow-orderSkipRangeHigh-orderSkipCount
+#   - For example a config rule of 2-6-4::2-50-1 will
+#      -- delay sending a message with a sequence number by 4 (orderDelayCount). 
+#         Example: Send 1, Send 2, Send 4, Send 5, Send 6, Send 7, Send 3
+#      -- repeat the delay pattern every x messages where x is a random number 
+#         between 2 and 6 (orderDelayRangeLow-orderDelayRangeHigh) on every repeat
+#          
+#      -- skip sending 1 (orderSkipCount) message every y messages where y is a random number
+#         between 2 and 50 (orderDelayRangeLow-orderDelayRangeHigh)
+# 
+# Optional Config
+#   For SampleType "file" and "list", the default generation behavior is to pick a random value from the SampleSource
+#   Append "roundrobin" to the "file" and "list" SampleTypes if the sample values have to be picked in order
+#                             
+# Example entries
+#   locId::STRING::AB05::file::/Users/martz/dev/projects/kafka-load-producer/config/files/locids
+#   eventTime::DATE::2015-01-01 10:10:41::current::YYYY-MM-dd HH:mm:ss
+#   messageNum::INT::1::range::1-1000
+#   seqNum::INT::0::sequence::200
+#   countryList::STRING::list::USA,Russia,Chile,Canada,Norway::roundrobin
+#   payload::STRING::asciiblob::100-1000
+#   messageNum::EDASEQNUM::1::custom::1::2-6-4::2-50-1
+#   
+#
+###########################################################################              
+locId::INT::1::sequence::1
+hotelKey::STRING::AAAAA::list::ATLFR,DCSGH::roundrobin
+eventTime::DATE::2018-01-01 10:10:41::current::YYYY-MM-dd HH:mm:ss
+#eventTime::STRING::1970-01-18T15:59:34.476::1970-01-18T15:59:34.476,2018-01-01 10:10:41::roundrobin
+messageNum::INT::1::sequence::1
+messageType::STRING::synchronizeRatecodes::list::synchronizePropertyConfigurations,synchronizeRateCodes,badTypes,,synchronizeReservationSummaries,synchronizeHousePolicies::roundrobin
+messagePayload::STRING::ABCDEF::file::./deploy/config/files/payloads_notbig::roundrobin

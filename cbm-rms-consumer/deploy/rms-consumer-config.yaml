@@ -1,0 +1,34 @@
+applicationId: cbm-rms-consumer-app-1
+clientId: cbm-rms-client-1
+groupId: cbm-rms-group-1
+brokerList: localhost:9092
+autoOffsetReset: latest
+processingGuarantee: exactly_once
+commitInterval: 2000
+numOfThreads: 1
+streams-source-config:
+  name: RmsSource
+  topic: rms-topic-1
+filter-processor-config:
+  name: FilterProcessor
+  filterType: IN
+  filterField: type
+  filterValues:
+  - NotifyOptimizationRequest
+rms-rest-call-processor-config:
+ name: RMSRestCallProcessor
+ baseRestUrl: http://localhost:8082/topics/rms-consumer-success-topic-1
+ connectTimeout: 200
+ socketTimeout: 200
+ httpHeaders:
+  - key: Content-Type
+    value: application/vnd.kafka.json.v2+json
+  - key: Accept
+    value: application/vnd.kafka.v2+json
+ successSinkName: SuccessSink
+ errorSinkName: ErrorSink
+streams-sink-config:
+  - name: SuccessSink
+    topic: rms-consumer-success-topic-1
+  - name: ErrorSink
+    topic: rms-consumer-error-topic-1

@@ -1,0 +1,83 @@
+applicationId: cbm-bt-app-1 
+clientId: cbm-bt-client-1
+groupId: cbm-bt-group
+brokerList: localhost:9092
+autoOffsetReset: latest
+processingGuarantee: exactly_once
+commitInterval: 2000
+numOfThreads: 1
+streams-source-config:
+  name: IngestSource
+  topic: grs_sync_event_con_intdc4
+rules-processor-config:
+  name: RulesProcessor
+#message-order-processor-config:
+#  name: MessageOrderProcessor
+#  store: cbm-message-list
+#  batchDuration: 20000
+#  successProcessor: RMSSink1
+#  alertSink: AlertSink
+message-route-processor-config:
+ name: MessageRouteProcessor
+ routes-config:
+  - messageTypes: 
+    - synchronizePriceGrids
+    - synchronizePropertyConfigurations
+    - synchronizeClassSharingRules
+    - synchronizeTaxes
+    - synchronizePriceGridSummaries
+    - synchronizeRateCodes
+    - synchronizeLosPricing
+    - synchronizeInventoryStatistics
+    - synchronizeInventoryTypes
+    sinkName: OtherSink
+  - messageTypes:
+    - synchronizePropertyConfigurations
+    - synchronizeRoomTypes
+    - synchronizeGroupBlocks
+    - synchronizeProductClasses
+    - synchronizeRateCodes
+    sinkName: PMSSinkP1
+  - messageTypes:
+    - synchronizeSellStrategies
+    - synchronizeRatePlanTypes
+    sinkName: PMSSinkP2
+  - messageTypes:
+    - synchronizeReservationSummaries
+    sinkName: PMSSinkP3
+  - messageTypes:
+    - synchronizeHousePolicies
+    sinkName: PMSSinkP4
+  - messageTypes:
+    - synchronizeProductClasses
+    - synchronizePriceGrids
+    sinkName: RMSSink
+ errorSinkName: ErrorSink
+streams-sink-config:
+  - name: PMSSinkP1
+    topic: grs_sync_eventcbm_pmsp1_intdc4
+  - name: PMSSinkP2
+    topic: grs_sync_eventcbm_pmsp2_intdc4
+  - name: PMSSinkP3
+    topic: grs_sync_eventcbm_pmsp3_intdc4
+  - name: PMSSinkP4
+    topic: grs_sync_eventcbm_pmsp4_intdc4
+  - name: RMSSink
+    topic: grs_sync_eventcbm_rms_intdc4
+  - name: OtherSink
+    topic: grs_sync_eventcbm_other_intdc4
+  - name: ErrorSink 
+    topic: grs_sync_event_con_intdc4_err
+  - name: PMSSinkRQP1   
+    topic: grs_sync_eventcbm_pmsp1_intdc4_requeue
+  - name: PMSSinkRQP2   
+    topic: grs_sync_eventcbm_pmsp2_intdc4_requeue
+  - name: PMSSinkRQP3   
+    topic: grs_sync_eventcbm_pmsp3_intdc4_requeue
+  - name: PMSSinkRQP4   
+    topic: grs_sync_eventcbm_pmsp4_intdc4_requeue
+    
+#  - name: BusinessSink2
+#    topic: rms-topic-2
+#  - name: AlertSink
+#    topic: alert-topic-1
