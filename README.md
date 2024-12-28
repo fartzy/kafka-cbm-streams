@@ -4,7 +4,7 @@
 ![image](https://user-images.githubusercontent.com/13722755/181151359-e4d93083-676a-4c80-be55-5270a6f1ccfb.png)
 
 
-This three-tiered application routes messages to a consumer based on rules. The rules are contained within the yaml configuration file.  The producer of the messages is the load generator service. The load generator service creates a configurable amount of messages, in a configurable format. 
+This was the beginnings of an application used in a large hospitality company. This three-tiered application routes messages to a consumer based on rules. The rules are contained within the yaml configuration file.  The producer of the messages is the load generator service. The load generator service creates a configurable amount of messages, in a configurable format. 
 
 This was modified from an application used for a customer in 2017.  This application could be extended to be a much richer routing system. 
 
